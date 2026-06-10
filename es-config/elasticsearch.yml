@@ -1,0 +1,9 @@
+# Baseline Elasticsearch configuration.
+#
+# This is an intentionally untuned starting point.
+
+cluster.name: forager-takehome
+node.name: es-01
+network.host: 0.0.0.0
+discovery.type: single-node
+xpack.security.enabled: false

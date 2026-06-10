@@ -1,0 +1,39 @@
+services:
+  elasticsearch:
+    image: elasticsearch:8.13.4
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms2g -Xmx2g
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./es-config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health | grep -q '\"status\":\"\\(green\\|yellow\\)\"'"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+
+  pipeline:
+    build: ./pipeline
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      - ES_URL=http://elasticsearch:9200
+      - DATA_DIR=/data
+    volumes:
+      - ./data:/data:ro
+      - ./pipeline:/app
+    # Hard ceiling — applies ONLY to the pipeline service. Do not raise.
+    # The grader runs the pipeline against the same limits.
+    # ES (and any other staging services you add) are unconstrained — give
+    # them whatever resources you want.
+    mem_limit: 2g
+    cpus: 4.0
+    command: python -u /app/main.py
+
+volumes:
+  es-data:
