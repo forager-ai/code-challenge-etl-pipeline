@@ -32,8 +32,9 @@ You're free to add intermediate staging stores (bronze / silver / gold-style
 layering) if it helps throughput — anything you can fit inside the
 docker-compose environment.
 
-**Your primary score is ingestion rate.** The faster your solution indexes
-the full dataset, the higher you score.
+**Ingestion rate matters, but only if it holds as the data grows.** A fast
+run on this bundle counts only if the design keeps that rate at much larger
+volumes (see *Evaluation → Performance*).
 
 ### Inputs
 
