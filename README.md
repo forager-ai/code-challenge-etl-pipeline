@@ -32,8 +32,9 @@ You're free to add intermediate staging stores (bronze / silver / gold-style
 layering) if it helps throughput — anything you can fit inside the
 docker-compose environment.
 
-**Your primary score is ingestion rate.** The faster your solution indexes
-the full dataset, the higher you score.
+**Ingestion rate matters, but only if it holds as the data grows.** A fast
+run on this bundle counts only if the design keeps that rate at much larger
+volumes (see *Evaluation → Performance*).
 
 ### Inputs
 
@@ -232,10 +233,24 @@ These same tests are what the interviewer runs — no separate internal grader.
 Measured as **persons indexed per second** over the full run, on the constrained
 container (`mem_limit: 2g`, `cpus: 4.0`).
 
+**The rate also has to scale.** Production data is far larger than this bundle.
+If we fed your pipeline **100× the data** (persons *and* organizations), and only
+added more worker nodes and Elasticsearch nodes horizontally, with each pipeline
+container still at `mem_limit: 2g` / `cpus: 4.0`, would your ingestion rate hold?
+A fast number that depends on something that can't grow that way doesn't count
+for much. Explain in `EVALUATION.md` how your design behaves at 100× and what
+would need to change.
+
 ### 3. Code quality
 
-Reviewed as a PR. We look at:
+Reviewed as a PR. In priority order, we look at:
 
+- **Readability and maintainability** — this matters most. Code that is easy
+  to understand and easy to change: elegant, simple, small focused functions,
+  clear names, no cleverness for its own sake. A senior engineer should be able
+  to land this PR without a walkthrough and without rewriting it.
+- **Type safety** — the shape of the data is clear and safe from the moment
+  it's read to the moment it's indexed.
 - **Schema / mapping design** — explicit mapping vs. dynamic, field types,
   whether you used `index: false` / `doc_values: false` where appropriate
 - **Streaming hygiene** — bounded memory reads from gzipped NDJSON; no
@@ -244,8 +259,6 @@ Reviewed as a PR. We look at:
 - **Error handling at boundaries** — dangling refs, malformed rows, ES retries,
   bulk error responses
 - **Observability** — structured logs, progress reporting, throughput metrics
-- **Readability** — a senior engineer should be able to land this PR without
-  rewriting it
 
 ### 4. AI workflow fluency (`AI_NOTES.md` + repo evidence)
 
@@ -254,8 +267,13 @@ We're explicitly evaluating *how* you used AI tooling. The bar:
 - **Specificity** — named tools, real configs, concrete loops (not "I prompted
   it well")
 - **Judgment** — clear thinking about where AI helped vs. where you stepped in
-- **Leverage** — evidence the AI multiplied your output (the 4–6h gap should
-  be visible in what you got done)
+- **Loop workflows** — show the loops you had the agent run on its own: run
+  the benchmark, analyze the results, change something, re-run, repeat. What
+  did each iteration try, what did it find, and what did you keep or throw
+  away?
+- **Agents for code quality** — how you used agents to make the code better,
+  not just to write it: review passes, refactoring, tests, linting and static analysis,
+  hooks or subagents that hold the code to a standard.
 - **Control** — verify-loops, structured outputs, tests-as-rails, anything
   that kept the agent honest
 
