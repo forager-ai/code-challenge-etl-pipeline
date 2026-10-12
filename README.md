@@ -222,8 +222,8 @@ test suite checks:
 The `.keyword` subfield gets created automatically by ES dynamic mapping
 for string fields, so an explicit multi-field mapping is the safest choice.
 
-Expected counts live in `bench/expected.json` (ships with the data bundle).
-All three must pass. If they don't, the rest doesn't matter.
+Expected counts for the full data bundle are already filled in
+`bench/expected.json`. All three must pass. If they don't, the rest doesn't matter.
 
 These same tests are what the interviewer runs — no separate internal grader.
 
