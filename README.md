@@ -1,4 +1,4 @@
-# Forager Senior Full Stack Engineer — Take-Home
+# Forager Senior Engineer — Take-Home
 
 Welcome, and thanks for taking the time to do this.
 
