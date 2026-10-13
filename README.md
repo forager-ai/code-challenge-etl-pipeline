@@ -297,6 +297,9 @@ it either.
   (Stage 3).
 - **If you get stuck**, document where and why in `EVALUATION.md`. A partial
   submission with a clear-eyed retro is more useful than one that hides gaps.
+- **Anything you didn't finish**: for every requirement you couldn't complete,
+  or shipped in a simplified form, explain in `EVALUATION.md` what's missing
+  and how you would improve it with more time.
 
 ---
 
